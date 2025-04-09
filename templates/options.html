@@ -1,0 +1,224 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">
+            <i class="fas fa-sitemap mr-2"></i>2. Integrācijas opciju definēšana
+        </h3>
+    </div>
+    <div class="card-body">
+        <p class="card-text lead">
+            Definējiet iespējamās integrācijas stratēģijas (opcijas). Katrai opcijai norādiet:
+        </p>
+        
+        <ul class="mb-4">
+            <li>Nosaukumu (piemēram, "Līdzāspastāvēšana", "Daļēja integrācija")</li>
+            <li>Aprakstu - īsu skaidrojumu par šo integrācijas pieeju</li>
+        </ul>
+        
+        {% if error %}
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle mr-2"></i>{{ error }}
+        </div>
+        {% endif %}
+        
+        <form action="/options" method="POST" class="ajax-form">
+            <div id="options-container">
+                <!-- Option rows will be added here -->
+                {% if options|length > 0 %}
+                    {% for i in range(options|length) %}
+                        <div class="option-row card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-11">
+                                        <div class="form-group">
+                                            <label>Opcijas nosaukums</label>
+                                            <input type="text" class="form-control" 
+                                                   name="option_name[]" 
+                                                   placeholder="Nosaukums" 
+                                                   value="{{ options[i] }}" required>
+                                        </div>
+                                        <div class="form-group mb-0">
+                                            <label>Apraksts</label>
+                                            <textarea class="form-control" 
+                                                      name="option_description[]" 
+                                                      rows="2" 
+                                                      placeholder="Īss opcijas apraksts">{{ descriptions[i] }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-outline-danger remove-option-btn float-right">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Default option rows -->
+                    <div class="option-row card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <div class="form-group">
+                                        <label>Opcijas nosaukums</label>
+                                        <input type="text" class="form-control" 
+                                               name="option_name[]" 
+                                               placeholder="Nosaukums" 
+                                               value="Līdzāspastāvēšana" required>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label>Apraksts</label>
+                                        <textarea class="form-control" 
+                                                  name="option_description[]" 
+                                                  rows="2" 
+                                                  placeholder="Īss opcijas apraksts">Minimāla integrācija, sistēmas darbojas atsevišķi, dati apmainīti periodiski</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-outline-danger remove-option-btn float-right">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-row card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <div class="form-group">
+                                        <label>Opcijas nosaukums</label>
+                                        <input type="text" class="form-control" 
+                                               name="option_name[]" 
+                                               placeholder="Nosaukums" 
+                                               value="Daļēja integrācija" required>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label>Apraksts</label>
+                                        <textarea class="form-control" 
+                                                  name="option_description[]" 
+                                                  rows="2" 
+                                                  placeholder="Īss opcijas apraksts">Kritisko datu sinhronizācija starp sistēmām, pārējais atstāts atsevišķi</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-outline-danger remove-option-btn float-right">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-row card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <div class="form-group">
+                                        <label>Opcijas nosaukums</label>
+                                        <input type="text" class="form-control" 
+                                               name="option_name[]" 
+                                               placeholder="Nosaukums" 
+                                               value="Pilnīga integrācija" required>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label>Apraksts</label>
+                                        <textarea class="form-control" 
+                                                  name="option_description[]" 
+                                                  rows="2" 
+                                                  placeholder="Īss opcijas apraksts">Visu sistēmu apvienošana vienotā platformā</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-outline-danger remove-option-btn float-right">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <button type="button" id="add-option-btn" class="btn btn-outline-primary">
+                    <i class="fas fa-plus mr-2"></i>Pievienot opciju
+                </button>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle mr-2"></i>
+                Ieteicams definēt vismaz 2-3 dažādas integrācijas stratēģijas, kas ietver gan minimālas, gan plašākas integrācijas scenārijus.
+            </div>
+            
+            <div class="text-right">
+                <a href="/criteria" class="btn btn-outline-secondary mr-2">
+                    <i class="fas fa-arrow-left mr-2"></i>Atpakaļ
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-arrow-right mr-2"></i>Turpināt
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // Add new option row
+        $('#add-option-btn').click(function() {
+            const newRow = `
+                <div class="option-row card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <div class="form-group">
+                                    <label>Opcijas nosaukums</label>
+                                    <input type="text" class="form-control" 
+                                           name="option_name[]" 
+                                           placeholder="Nosaukums" required>
+                                </div>
+                                <div class="form-group mb-0">
+                                    <label>Apraksts</label>
+                                    <textarea class="form-control" 
+                                              name="option_description[]" 
+                                              rows="2" 
+                                              placeholder="Īss opcijas apraksts"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-outline-danger remove-option-btn float-right">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            $('#options-container').append(newRow);
+        });
+        
+        // Remove option row
+        $(document).on('click', '.remove-option-btn', function() {
+            const optionCount = $('.option-row').length;
+            if (optionCount > 1) {
+                $(this).closest('.option-row').remove();
+            } else {
+                alert('Vismaz vienai opcijai jābūt definētai!');
+            }
+        });
+        
+        // If no options present, add default ones
+        if ($('.option-row').length === 0) {
+            // Default options will be added from the template
+        }
+    });
+</script>
+{% endblock %} 

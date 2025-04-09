@@ -1,0 +1,183 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">
+            <i class="fas fa-list-ol mr-2"></i>1. Kritēriju definēšana
+        </h3>
+    </div>
+    <div class="card-body">
+        <p class="card-text lead">
+            Definējiet novērtēšanas kritērijus un to svarus. Katram kritērijam norādiet:
+        </p>
+        
+        <ul class="mb-4">
+            <li>Nosaukumu (piemēram, "Izmaksas", "Ieviešanas laiks", "Saderība")</li>
+            <li>Svaru (%) - cik svarīgs ir šis kritērijs kopējā vērtējumā</li>
+            <li>Mērķi - vai vēlaties šo kritēriju maksimizēt vai minimizēt</li>
+        </ul>
+
+        <div class="alert alert-info mb-4">
+            <i class="fas fa-info-circle mr-2"></i>
+            <strong>Ieteikums:</strong> Zemāk ir iepriekš definēta kritēriju kopa, kas pielāgota mazām organizācijām. Jūs varat to rediģēt pēc vajadzības.
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle mr-2"></i>{{ error }}
+        </div>
+        {% endif %}
+        
+        <form action="/criteria" method="POST" class="ajax-form">
+            <div id="criteria-container">
+                <!-- Criteria rows will be added here -->
+                {% if criteria|length > 0 %}
+                    {% for i in range(criteria|length) %}
+                        <div class="criteria-row row mb-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" 
+                                       name="criteria_name[]" 
+                                       placeholder="Kritērija nosaukums" 
+                                       value="{{ criteria[i] }}" required>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" 
+                                           name="criteria_weight[]" 
+                                           placeholder="Svars" min="1" max="100" 
+                                           value="{{ (weights[i] * 100)|round }}" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-control" name="criteria_direction[]">
+                                    <option value="1" {% if directions[i] == 1 %}selected{% endif %}>
+                                        Maksimizēt
+                                    </option>
+                                    <option value="-1" {% if directions[i] == -1 %}selected{% endif %}>
+                                        Minimizēt
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-outline-danger remove-criteria-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Default initial criteria row -->
+                    <div class="criteria-row row mb-3">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" 
+                                   name="criteria_name[]" 
+                                   placeholder="Kritērija nosaukums" required>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <input type="number" class="form-control" 
+                                       name="criteria_weight[]" 
+                                       placeholder="Svars" min="1" max="100" 
+                                       value="25" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control" name="criteria_direction[]">
+                                <option value="1">Maksimizēt</option>
+                                <option value="-1">Minimizēt</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-outline-danger remove-criteria-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <button type="button" id="add-criteria-btn" class="btn btn-outline-primary">
+                    <i class="fas fa-plus mr-2"></i>Pievienot kritēriju
+                </button>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle mr-2"></i>
+                Svariem nav obligāti jāveido kopā tieši 100%. Tie tiks automātiski normalizēti.
+            </div>
+            
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-arrow-right mr-2"></i>Turpināt
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // Add new criteria row
+        $('#add-criteria-btn').click(function() {
+            const newRow = `
+                <div class="criteria-row row mb-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" 
+                               name="criteria_name[]" 
+                               placeholder="Kritērija nosaukums" required>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <input type="number" class="form-control" 
+                                   name="criteria_weight[]" 
+                                   placeholder="Svars" min="1" max="100" 
+                                   value="25" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control" name="criteria_direction[]">
+                            <option value="1">Maksimizēt</option>
+                            <option value="-1">Minimizēt</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-outline-danger remove-criteria-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            $('#criteria-container').append(newRow);
+        });
+        
+        // Remove criteria row
+        $(document).on('click', '.remove-criteria-btn', function() {
+            const criteriaCount = $('.criteria-row').length;
+            if (criteriaCount > 1) {
+                $(this).closest('.criteria-row').remove();
+            } else {
+                alert('Vismaz vienam kritērijam jābūt definētam!');
+            }
+        });
+        
+        // If no criteria present, add one row
+        if ($('.criteria-row').length === 0) {
+            $('#add-criteria-btn').click();
+        }
+    });
+</script>
+{% endblock %} 

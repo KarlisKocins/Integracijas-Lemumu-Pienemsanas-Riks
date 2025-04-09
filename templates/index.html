@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Integrācijas Lēmumu Pieņemšanas Rīks</h1>
+    <p class="lead">
+        Šis rīks palīdz organizācijām pieņemt pamatotus lēmumus par sistēmu integrācijas stratēģiju izvēli, 
+        izmantojot formālu daudzkritēriju lēmumu pieņemšanas modeli.
+    </p>
+    <hr class="my-4">
+    <p>Izpildiet četrus vienkāršus soļus, lai iegūtu rekomendāciju par labāko integrācijas stratēģiju.</p>
+    <a class="btn btn-primary btn-lg" href="/criteria" role="button">
+        <i class="fas fa-arrow-right mr-2"></i>Sākt
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card bg-light mb-4">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+                    <i class="fas fa-list-ol mb-3 text-primary" style="font-size: 2rem;"></i>
+                    <br>1. Kritēriju definēšana
+                </h5>
+                <p class="card-text">Definējiet kritērijus un to svarus integrācijas opciju novērtēšanai</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light mb-4">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+                    <i class="fas fa-sitemap mb-3 text-primary" style="font-size: 2rem;"></i>
+                    <br>2. Integrācijas opcijas
+                </h5>
+                <p class="card-text">Definējiet dažādas integrācijas stratēģijas, ko vēlaties izvērtēt</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light mb-4">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+                    <i class="fas fa-balance-scale mb-3 text-primary" style="font-size: 2rem;"></i>
+                    <br>3. Novērtēšana
+                </h5>
+                <p class="card-text">Novērtējiet katru opciju pēc katra definētā kritērija</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light mb-4">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+                    <i class="fas fa-chart-bar mb-3 text-primary" style="font-size: 2rem;"></i>
+                    <br>4. Rezultāti
+                </h5>
+                <p class="card-text">Saņemiet rekomendāciju, kas balstīta uz Jūsu kritērijiem un vērtējumiem</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Ieteicamie kritēriji</h5>
+            </div>
+            <div class="card-body">
+                <p>Izvērtējot integrācijas opcijas, ieteicams ņemt vērā šādus kritērijus:</p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Izmaksas
+                        <span class="badge badge-danger badge-pill">Minimizēt</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Ieviešanas laiks
+                        <span class="badge badge-danger badge-pill">Minimizēt</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Piejamības zuduma risks
+                        <span class="badge badge-danger badge-pill">Minimizēt</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Funkcionalitāte
+                        <span class="badge badge-success badge-pill">Maksimizēt</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Darbinieku/Lietotāja gatavība
+                        <span class="badge badge-success badge-pill">Maksimizēt</span>
+                    </li>
+                </ul>
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Šie kritēriji tiks automātiski ielādēti, kad sāksiet lietot rīku. Jūs varat tos rediģēt pēc vajadzības.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Tipiskās integrācijas stratēģijas</h5>
+            </div>
+            <div class="card-body">
+                <p>Parasti tiek izvērtētas šādas integrācijas stratēģijas:</p>
+                <ul class="list-group list-group-flush">
+                    {% for option in suggested_options %}
+                    <li class="list-group-item">
+                        <strong>{{ option.name }}</strong>
+                        <p class="mb-0 text-muted small">{{ option.description }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
